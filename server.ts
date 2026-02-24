@@ -52,7 +52,11 @@ app.get("/api/auth/google/url", (req, res) => {
   const redirectUri = `${appUrl}/auth/callback`;
   const url = googleClient.generateAuthUrl({
     access_type: "offline",
-    scope: ["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"],
+    scope: [
+      "openid",
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/userinfo.email"
+    ],
     redirect_uri: redirectUri
   });
   res.json({ url });
