@@ -45,7 +45,10 @@ const requireAuth = (req: any, res: any, next: any) => {
 
 // Google Auth URL
 app.get("/api/auth/google/url", (req, res) => {
-  const appUrl = (process.env.APP_URL || 'http://localhost:3000').replace(/\/$/, '');
+  let appUrl = (process.env.APP_URL || 'http://localhost:3000').replace(/\/$/, '');
+  if (!appUrl.startsWith('http')) {
+    appUrl = `https://${appUrl}`;
+  }
   const redirectUri = `${appUrl}/auth/callback`;
   const url = googleClient.generateAuthUrl({
     access_type: "offline",
@@ -58,7 +61,10 @@ app.get("/api/auth/google/url", (req, res) => {
 // Google Auth Callback
 app.get("/auth/callback", async (req, res) => {
   const { code } = req.query;
-  const appUrl = (process.env.APP_URL || 'http://localhost:3000').replace(/\/$/, '');
+  let appUrl = (process.env.APP_URL || 'http://localhost:3000').replace(/\/$/, '');
+  if (!appUrl.startsWith('http')) {
+    appUrl = `https://${appUrl}`;
+  }
   const redirectUri = `${appUrl}/auth/callback`;
   
   try {
