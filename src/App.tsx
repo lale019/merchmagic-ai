@@ -74,7 +74,9 @@ export default function App() {
     fetchProfile();
     
     const handleMessage = (event: MessageEvent) => {
+      console.log("Received message:", event.data);
       if (event.data?.type === 'OAUTH_AUTH_SUCCESS') {
+        console.log("Auth success received, fetching profile...");
         fetchProfile();
       }
     };
@@ -503,6 +505,13 @@ export default function App() {
                     <div>
                       <div className="flex items-center gap-2">
                         <h2 className="text-lg font-bold">{user.name}</h2>
+                        <button 
+                          onClick={fetchProfile}
+                          className="p-1 hover:bg-m3-surface-variant rounded-full transition-colors"
+                          title="Refresh Profile"
+                        >
+                          <RefreshCw size={14} className={isLoadingProfile ? 'animate-spin' : ''} />
+                        </button>
                         {user.isPro && (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold rounded-full uppercase tracking-wider">
                             <Crown size={10} /> Pro

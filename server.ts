@@ -12,6 +12,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = 3000;
 
+// Trust proxy is required for secure cookies on Railway/Render
+app.set('trust proxy', 1);
+
 // Mock Database (In-memory for this example, would use SQLite/Postgres in production)
 const users: Record<string, any> = {};
 
@@ -20,8 +23,8 @@ app.use(cookieSession({
   name: 'session',
   keys: [process.env.SESSION_SECRET || 'merchmagic-secret'],
   maxAge: 24 * 60 * 60 * 1000, // 24 hours
-  secure: true,
-  sameSite: 'none'
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax'
 }));
 
 const googleClient = new OAuth2Client(
@@ -107,7 +110,9 @@ app.get("/auth/callback", async (req, res) => {
           <script>
             if (window.opener) {
               window.opener.postMessage({ type: 'OAUTH_AUTH_SUCCESS' }, '*');
-              window.close();
+              setTimeout(() => {
+                window.close();
+              }, 500);
             } else {
               window.location.href = '/';
             }
