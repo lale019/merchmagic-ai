@@ -1,7 +1,6 @@
 import React from 'react';
 import { ProductType } from '../types';
 import { Shirt, ShoppingBag, Smartphone, Monitor, GraduationCap, Coffee, Layout } from 'lucide-react';
-import { motion } from 'motion/react';
 
 interface MockupSelectorProps {
   selected: ProductType;
@@ -22,10 +21,8 @@ export const MockupSelector: React.FC<MockupSelectorProps> = ({ selected, onSele
   return (
     <div className="grid grid-cols-4 gap-2">
       {products.map((product) => (
-        <motion.button
+        <button
           key={product.type}
-          whileHover={{ y: -2 }}
-          whileTap={{ scale: 0.98 }}
           onClick={() => onSelect(product.type)}
           className={`
             flex flex-col items-center justify-center min-h-[80px] p-2 rounded-[24px] border transition-all duration-300 ripple
@@ -43,7 +40,7 @@ export const MockupSelector: React.FC<MockupSelectorProps> = ({ selected, onSele
           <span className={`text-[9px] uppercase tracking-wider font-bold transition-colors duration-300 ${selected === product.type ? 'text-white' : 'text-m3-on-surface-variant'}`}>
             {product.label}
           </span>
-        </motion.button>
+        </button>
       ))}
     </div>
   );

@@ -11,6 +11,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+console.log("main.tsx executing...");
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />

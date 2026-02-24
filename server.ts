@@ -245,33 +245,43 @@ app.get("/.well-known/assetlinks.json", (req, res) => {
 // --- VITE MIDDLEWARE ---
 
 async function startServer() {
-  // Explicitly serve manifest and service worker
-  app.get("/manifest.json", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "manifest.json"));
-  });
-  app.get("/sw.js", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "sw.js"));
-  });
+  try {
+    console.log("Starting server...");
+    console.log("NODE_ENV:", process.env.NODE_ENV);
+    console.log("APP_URL:", process.env.APP_URL);
 
-  // Serve public folder for other assets
-  app.use(express.static(path.join(__dirname, "public")));
+    // Explicitly serve manifest and service worker
+    app.get("/manifest.json", (req, res) => {
+      res.sendFile(path.join(__dirname, "public", "manifest.json"));
+    });
+    app.get("/sw.js", (req, res) => {
+      res.sendFile(path.join(__dirname, "public", "sw.js"));
+    });
 
-  if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
+    if (process.env.NODE_ENV !== "production") {
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: "spa",
+      });
+      app.use(vite.middlewares);
+    } else {
+      // Serve static files from dist
+      app.use(express.static(path.join(__dirname, "dist"), { index: false }));
+      
+      // Fallback to index.html for SPA
+      app.get("*", (req, res) => {
+        console.log("Serving index.html for path:", req.path);
+        res.sendFile(path.join(__dirname, "dist", "index.html"));
+      });
+    }
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+      console.log("Static assets directory:", process.env.NODE_ENV === "production" ? "dist" : "Vite middleware");
     });
-    app.use(vite.middlewares);
-  } else {
-    app.use(express.static(path.join(__dirname, "dist")));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(__dirname, "dist", "index.html"));
-    });
+  } catch (error) {
+    console.error("Critical server error during startup:", error);
   }
-
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
 }
 
 startServer();

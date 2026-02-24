@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Download, Sparkles, RefreshCw, Wand2, Share2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
 import { GeneratedMockup } from '../types';
 
 interface MockupDisplayProps {
@@ -37,40 +36,28 @@ export const MockupDisplay: React.FC<MockupDisplayProps> = ({
   return (
     <div className="w-full space-y-4">
       <div className="relative aspect-square w-full rounded-[32px] overflow-hidden bg-m3-surface-variant/30 border border-m3-outline/10 shadow-xl group">
-        <AnimatePresence mode="wait">
-          {isGenerating || isEditing ? (
-            <motion.div
-              key="loading"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 flex flex-col items-center justify-center bg-m3-surface/80 backdrop-blur-md z-10"
-            >
-              <div className="relative">
-                <RefreshCw className="w-12 h-12 text-m3-primary animate-spin" strokeWidth={1.5} />
-                <Sparkles className="absolute -top-1 -right-1 w-6 h-6 text-m3-secondary animate-pulse" />
-              </div>
-              <p className="mt-4 text-[10px] font-bold text-m3-on-surface-variant tracking-[0.2em] uppercase">
-                {isEditing ? 'REFINING...' : 'CRAFTING...'}
-              </p>
-            </motion.div>
-          ) : mockup ? (
-            <motion.img
-              key={mockup.imageUrl}
-              initial={{ opacity: 0, scale: 1.05 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              src={mockup.imageUrl}
-              alt="Generated Mockup"
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-m3-on-surface-variant/20">
-              <Wand2 size={64} strokeWidth={1} />
-              <p className="mt-2 text-xs font-bold tracking-tight">Your creation will appear here</p>
+        {isGenerating || isEditing ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-m3-surface/80 backdrop-blur-md z-10">
+            <div className="relative">
+              <RefreshCw className="w-12 h-12 text-m3-primary animate-spin" strokeWidth={1.5} />
+              <Sparkles className="absolute -top-1 -right-1 w-6 h-6 text-m3-secondary animate-pulse" />
             </div>
-          )}
-        </AnimatePresence>
+            <p className="mt-4 text-[10px] font-bold text-m3-on-surface-variant tracking-[0.2em] uppercase">
+              {isEditing ? 'REFINING...' : 'CRAFTING...'}
+            </p>
+          </div>
+        ) : mockup ? (
+          <img
+            src={mockup.imageUrl}
+            alt="Generated Mockup"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-m3-on-surface-variant/20">
+            <Wand2 size={64} strokeWidth={1} />
+            <p className="mt-2 text-xs font-bold tracking-tight">Your creation will appear here</p>
+          </div>
+        )}
 
         {mockup && !isGenerating && !isEditing && (
           <div className="absolute bottom-3 right-3 flex gap-2">
@@ -99,11 +86,7 @@ export const MockupDisplay: React.FC<MockupDisplayProps> = ({
       </div>
 
       {mockup && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-3"
-        >
+        <div className="space-y-3">
           <div className="flex items-center gap-2 text-[9px] font-bold text-m3-primary uppercase tracking-[0.2em] px-1">
             <Sparkles size={12} />
             <span>AI Magic Edit</span>
@@ -125,7 +108,7 @@ export const MockupDisplay: React.FC<MockupDisplayProps> = ({
               <Wand2 size={18} />
             </button>
           </form>
-        </motion.div>
+        </div>
       )}
     </div>
   );
