@@ -170,7 +170,11 @@ export default function App() {
       });
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "Failed to generate mockup. Please try again.");
+      if (err.message?.includes('429') || err.message?.includes('quota')) {
+        setError("You've reached the AI generation limit for today. Please try again tomorrow or upgrade to Pro!");
+      } else {
+        setError(err.message || "Failed to generate mockup. Please try again.");
+      }
     } finally {
       setIsGenerating(false);
     }
