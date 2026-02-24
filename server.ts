@@ -45,7 +45,8 @@ const requireAuth = (req: any, res: any, next: any) => {
 
 // Google Auth URL
 app.get("/api/auth/google/url", (req, res) => {
-  const redirectUri = `${process.env.APP_URL || 'http://localhost:3000'}/auth/callback`;
+  const appUrl = (process.env.APP_URL || 'http://localhost:3000').replace(/\/$/, '');
+  const redirectUri = `${appUrl}/auth/callback`;
   const url = googleClient.generateAuthUrl({
     access_type: "offline",
     scope: ["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"],
@@ -57,7 +58,8 @@ app.get("/api/auth/google/url", (req, res) => {
 // Google Auth Callback
 app.get("/auth/callback", async (req, res) => {
   const { code } = req.query;
-  const redirectUri = `${process.env.APP_URL || 'http://localhost:3000'}/auth/callback`;
+  const appUrl = (process.env.APP_URL || 'http://localhost:3000').replace(/\/$/, '');
+  const redirectUri = `${appUrl}/auth/callback`;
   
   try {
     const { tokens } = await googleClient.getToken({
